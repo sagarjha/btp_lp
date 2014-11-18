@@ -22,16 +22,16 @@ public class Sample {
 	inequalities[1] = new LinearMultivariateRealFunction(new double[]{0,1,0,0,0,0}, 1);
 	inequalities[2] = new LinearMultivariateRealFunction(new double[]{0,0,1,0,0,0}, 1);
 	inequalities[3] = new LinearMultivariateRealFunction(new double[]{0,0,0,1,0,0}, 1);
-	inequalities[4] = new LinearMultivariateRealFunction(new double[]{0,1,0,0,1,0}, 1);
-	inequalities[5] = new LinearMultivariateRealFunction(new double[]{0,1,0,0,0,1}, 1);
-	inequalities[6] = new LinearMultivariateRealFunction(new double[]{10,0,10,0,10,0}, 40);
-	inequalities[7] = new LinearMultivariateRealFunction(new double[]{0,10,0,10,0,10}, 20);	    
+	inequalities[4] = new LinearMultivariateRealFunction(new double[]{0,0,0,0,1,0}, 1);
+	inequalities[5] = new LinearMultivariateRealFunction(new double[]{0,0,0,0,0,1}, 1);
+	inequalities[6] = new LinearMultivariateRealFunction(new double[]{10,0,10,0,10,0}, 30);
+	inequalities[7] = new LinearMultivariateRealFunction(new double[]{0,10,0,10,0,10}, 30);
 	    
 	//optimization problem
 	OptimizationRequest or = new OptimizationRequest();
 	or.setF0(objectiveFunction);
 	//or.setInitialPoint(new double[] { 0.66666666666, 0.33333333333, 0.666666666666, 0.3333333333333, 0.666666666666, 0.3333333333333});
-	//or.setFi(inequalities); //if you want x>0 and y>0
+	or.setFi(inequalities);
 	or.setA(A);
 	or.setB(b);
 	or.setToleranceFeas(1.E-12);

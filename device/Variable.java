@@ -13,5 +13,9 @@ public class Variable {
 	replica = replica_;
 	device_id = device_id_;
     }
+
+    public String printString () {
+	return "x_" + policy + "_" + partition + "_" + replica + "_" + device_id;
+    }
     
 }
