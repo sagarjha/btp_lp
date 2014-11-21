@@ -109,9 +109,9 @@ public class LP {
 	    for (int i = 0; i < P.length; ++i) {
 		Variable var1 = variableArray[i];
 		if (i == 0) {
-		br.write(var1.printString() + " ^2 ");		    
+		br.write("0.0000001 " + var1.printString() + " ^2 ");		    
 		}
-		br.write(" + " + var1.printString() + " ^2 ");
+		br.write(" + 0.0000001 " + var1.printString() + " ^2 ");
 	    }
 	    br.write(" ]/2");
 	}
@@ -170,7 +170,7 @@ public class LP {
 	    br.write("\n");
 	}
 
-	if (choice == 2 || choice == 3) {
+	if (choice == 2 || choice == 3 || choice == 4) {
 	    for (int i = 0; i < deviceArray.length-1; ++i) {
 		int storage_cap1 = deviceArray[i].storage_cap;
 		int storage_cap2 = deviceArray[i+1].storage_cap;
@@ -211,7 +211,85 @@ public class LP {
 		br.write (variableArray[i].printString() + " >= 0\n");
 	    }
 	}
+
+	// print constraints
+	for (int i = 0; i < 10; ++i) {
+	    boolean first = true;
+	    for (int j = 0; j < deviceArray.length; ++j) {
+		if (deviceArray[j].region == 0 | deviceArray[j].region == 1) {
+		    if (first == true) {
+			first = false;
+			br.write("x_0_" + i + "_0_"+j);
+		    }
+		    else {
+			br.write (" + x_0_" + i + "_0_"+j);
+		    }
+		}
+	    }
+	    br.write(" = 1\n");
+	}
+
+	for (int i = 0; i < 10; ++i) {
+	    for (int j = 0; j < 4; ++j) {
+		boolean first = true;
+		for (int k = 0; k < deviceArray.length; ++k) {
+		    if (deviceArray[k].region == j) {
+			if (first == true) {
+			    first = false;
+			    br.write("x_0_" + i + "_1_"+k);
+			}
+			else {
+			    br.write (" + x_0_" + i + "_1_"+k);
+			}
+		    }
+		}
+		first = true;
+		for (int k = 0; k < deviceArray.length; ++k) {
+		    if (deviceArray[k].region == j) {
+			if (first == true) {
+			    first = false;
+			    br.write(" - x_0_" + i + "_2_"+k);
+			}
+			else {
+			    br.write (" - x_0_" + i + "_2_"+k);
+			}
+		    }
+		}
+		
+		br.write(" = 0\n");
+	    }
+	}
 	
 	br.close();
+    }
+
+    public void printUtilization (String fileName, Variable [] variableArray, Device [] deviceArray, int [] partition_size, int choice) throws IOException {
+	BufferedReader br = new BufferedReader (new FileReader (fileName));
+	boolean val [] = new boolean [variableArray.length];
+	String line;
+	double utilization [] = new double [deviceArray.length];
+	while ((line = br.readLine()) != null) {
+	    if (line == "") {
+		continue;
+	    }
+	    String [] fields = line.split(" ");
+	    String var = fields[0];
+	    String [] info = var.split("_");
+	    int policy = Integer.parseInt(info[1]), part = Integer.parseInt(info[2]), replica = Integer.parseInt(info[3]), dev = Integer.parseInt(info[4]);
+	    // System.out.println(policy + " " + part + " " + replica + " " + dev);
+	    utilization[dev] += partition_size[policy];
+	    
+	    for (int i = 0; i < variableArray.length; ++i) {
+		Variable variable = variableArray[i];
+		if (variable.policy == policy && variable.partition == part && variable.replica == replica && variable.device_id == dev) {
+		    val[i] = true;
+		}
+	    }
+	}
+
+	for (int i = 0; i < deviceArray.length; ++i) {
+	    System.out.println((100.0 * utilization[i])/deviceArray[i].storage_cap);
+	}
+
     }
 }

@@ -206,6 +206,11 @@ public class Solve_lp {
 	    linear_program.h2[l] = deviceArray[l].storage_cap;
 	}
 
-	linear_program.printCPLEX (fileName, variableArray, deviceArray, partition_size, choice);
+	if (choice <= 4) {
+	    linear_program.printCPLEX (fileName, variableArray, deviceArray, partition_size, choice);
+	}
+	else {
+	    linear_program.printUtilization(fileName, variableArray, deviceArray, partition_size, choice);
+	}
     }
 }
